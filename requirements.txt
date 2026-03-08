@@ -1,0 +1,49 @@
+# Core RAG & LLM
+langchain>=0.2.0
+langchain-openai>=0.1.0
+langchain-anthropic>=0.1.0
+langchain-community>=0.2.0
+openai>=1.30.0
+anthropic>=0.28.0
+
+# Vector Store (choose one)
+chromadb>=0.5.0          # Local/self-hosted option
+# pinecone-client>=3.0.0 # Cloud option
+
+# Document Parsing
+pypdf>=4.0.0
+python-docx>=1.1.0
+pdfplumber>=0.11.0
+
+# Embeddings
+sentence-transformers>=3.0.0
+
+# Data Validation & Schemas
+pydantic>=2.7.0
+
+# API (Human Review Layer)
+fastapi>=0.111.0
+uvicorn>=0.30.0
+
+# Scheduling
+apscheduler>=3.10.0
+
+# Utilities
+python-dotenv>=1.0.0
+PyYAML>=6.0.1
+tiktoken>=0.7.0          # Token counting for chunking
+tqdm>=4.66.0
+pandas>=2.2.0
+
+# De-identification (HIPAA)
+presidio-analyzer>=2.2.354
+presidio-anonymizer>=2.2.354
+spacy>=3.7.0
+
+# Testing
+pytest>=8.2.0
+pytest-asyncio>=0.23.0
+
+# Report Generation
+lxml>=5.2.0              # For E2B R3 XML
+reportlab>=4.2.0         # For PDF report output

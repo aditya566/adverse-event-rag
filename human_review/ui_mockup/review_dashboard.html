@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Adverse Event Review — Pharmacovigilance</title>
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cigna-navy:      #003865;
+    --cigna-navy-dark: #002548;
+    --cigna-teal:      #00A3AD;
+    --cigna-teal-dark: #007A82;
+    --cigna-teal-light:#E5F6F7;
+    --cigna-orange:    #E87722;
+    --cigna-white:     #FFFFFF;
+    --cigna-bg:        #F4F6F8;
+    --cigna-border:    #D0D9E3;
+    --cigna-text:      #1A2B3C;
+    --cigna-muted:     #5A6B7A;
+    --cigna-light-navy:#E8EEF5;
+    --status-red:      #C8372D;
+    --status-red-bg:   #FDF2F1;
+    --status-red-bdr:  #F0C4C1;
+    --status-amber:    #B45309;
+    --status-amber-bg: #FFFBF0;
+    --status-amber-bdr:#F5D98A;
+    --status-green:    #1A7A4A;
+    --status-green-bg: #F0FAF5;
+    --status-green-bdr:#A7DFC4;
+    --font: 'Source Sans 3', 'Segoe UI', sans-serif;
+    --radius: 8px;
+    --radius-lg: 12px;
+    --shadow-sm: 0 1px 3px rgba(0,56,101,0.08);
+    --shadow-md: 0 4px 12px rgba(0,56,101,0.10);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: var(--font); background: var(--cigna-bg); color: var(--cigna-text); font-size: 14px; line-height: 1.5; min-height: 100vh; }
+
+  /* TOP NAV */
+  .topnav { background: var(--cigna-navy); height: 56px; display: flex; align-items: center; padding: 0 28px; justify-content: space-between; box-shadow: 0 2px 8px rgba(0,0,0,0.18); position: sticky; top: 0; z-index: 200; }
+  .nav-brand { display: flex; align-items: center; gap: 14px; }
+  .cigna-logo-text { font-size: 22px; font-weight: 700; color: #fff; letter-spacing: -0.5px; font-style: italic; }
+  .cigna-dot { display: inline-block; width: 7px; height: 7px; background: var(--cigna-teal); border-radius: 50%; margin-left: 1px; vertical-align: super; }
+  .nav-divider { width: 1px; height: 28px; background: rgba(255,255,255,0.25); }
+  .nav-app-name { font-size: 13px; font-weight: 500; color: rgba(255,255,255,0.85); }
+  .nav-right { display: flex; align-items: center; gap: 20px; }
+  .nav-counter { display: flex; align-items: center; gap: 6px; font-size: 12px; color: rgba(255,255,255,0.8); font-weight: 500; }
+  .nav-badge { font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 20px; line-height: 1.4; }
+  .badge-red   { background: var(--status-red);   color: #fff; }
+  .badge-amber { background: var(--status-amber); color: #fff; }
+  .badge-green { background: var(--status-green); color: #fff; }
+  .nav-avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--cigna-teal); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; color: #fff; }
+  .nav-username { font-size: 13px; color: rgba(255,255,255,0.9); font-weight: 500; }
+
+  /* SUBNAV */
+  .subnav { background: var(--cigna-white); border-bottom: 1px solid var(--cigna-border); padding: 0 28px; height: 48px; display: flex; align-items: center; justify-content: space-between; }
+  .breadcrumb { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--cigna-muted); }
+  .breadcrumb a { color: var(--cigna-teal-dark); text-decoration: none; font-weight: 500; }
+  .subnav-actions { display: flex; gap: 10px; }
+  .btn-outline { border: 1.5px solid var(--cigna-navy); color: var(--cigna-navy); background: transparent; border-radius: 20px; padding: 5px 16px; font-family: var(--font); font-size: 12px; font-weight: 600; cursor: pointer; }
+  .btn-primary-sm { background: var(--cigna-teal); color: #fff; border: none; border-radius: 20px; padding: 6px 16px; font-family: var(--font); font-size: 12px; font-weight: 600; cursor: pointer; }
+
+  /* LAYOUT */
+  .layout { display: grid; grid-template-columns: 300px 1fr; height: calc(100vh - 104px); overflow: hidden; }
+
+  /* SIDEBAR */
+  .sidebar { background: var(--cigna-white); border-right: 1px solid var(--cigna-border); display: flex; flex-direction: column; overflow: hidden; }
+  .sidebar-header { padding: 16px 20px 12px; border-bottom: 1px solid var(--cigna-border); }
+  .sidebar-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--cigna-navy); margin-bottom: 10px; }
+  .filter-tabs { display: flex; gap: 3px; background: var(--cigna-bg); border-radius: 8px; padding: 3px; }
+  .filter-tab { flex: 1; text-align: center; font-size: 11px; font-weight: 600; padding: 5px 4px; border-radius: 6px; border: none; background: transparent; color: var(--cigna-muted); cursor: pointer; font-family: var(--font); transition: all 0.15s; }
+  .filter-tab.active { background: var(--cigna-white); color: var(--cigna-navy); box-shadow: var(--shadow-sm); }
+  .case-list { flex: 1; overflow-y: auto; }
+  .case-list::-webkit-scrollbar { width: 4px; }
+  .case-list::-webkit-scrollbar-thumb { background: var(--cigna-border); border-radius: 2px; }
+  .case-item { padding: 14px 20px; border-bottom: 1px solid var(--cigna-bg); cursor: pointer; transition: background 0.1s; }
+  .case-item:hover { background: var(--cigna-bg); }
+  .case-item.active { background: var(--cigna-light-navy); border-left: 3px solid var(--cigna-teal); }
+  .case-item-row { display: flex; justify-content: space-between; align-items: center; }
+  .case-id { font-size: 11px; font-weight: 600; color: var(--cigna-muted); font-family: 'Courier New', monospace; }
+  .status-dot { width: 8px; height: 8px; border-radius: 50%; }
+  .dot-red   { background: var(--status-red); }
+  .dot-amber { background: var(--status-amber); }
+  .dot-green { background: var(--status-green); }
+  .case-drug { font-size: 14px; font-weight: 600; color: var(--cigna-navy); margin: 3px 0; }
+  .case-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 4px; }
+  .case-date { font-size: 11px; color: var(--cigna-muted); }
+  .case-chip { font-size: 10px; font-weight: 600; padding: 2px 7px; border-radius: 10px; text-transform: uppercase; letter-spacing: 0.05em; }
+  .chip-pending  { background: var(--status-amber-bg); color: var(--status-amber); border: 1px solid var(--status-amber-bdr); }
+  .chip-reviewed { background: var(--status-green-bg); color: var(--status-green); border: 1px solid var(--status-green-bdr); }
+
+  /* MAIN */
+  .main { overflow-y: auto; padding: 24px; background: var(--cigna-bg); }
+  .main::-webkit-scrollbar { width: 6px; }
+  .main::-webkit-scrollbar-thumb { background: var(--cigna-border); border-radius: 3px; }
+  .empty-state { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 60%; gap: 12px; color: var(--cigna-muted); }
+  .empty-icon { width: 64px; height: 64px; border-radius: 50%; background: var(--cigna-light-navy); display: flex; align-items: center; justify-content: center; font-size: 28px; margin-bottom: 8px; }
+  .empty-state h3 { font-size: 16px; font-weight: 600; color: var(--cigna-navy); }
+
+  /* CASE HEADER */
+  .case-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; }
+  .case-header h2 { font-size: 20px; font-weight: 700; color: var(--cigna-navy); margin-bottom: 6px; }
+  .header-chips { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+  .hchip { display: inline-flex; align-items: center; gap: 4px; background: var(--cigna-white); border: 1px solid var(--cigna-border); border-radius: 20px; padding: 3px 10px; font-size: 12px; color: var(--cigna-muted); font-weight: 500; }
+  .report-chip { background: #FEF3E8; border-color: #F5C99A; color: var(--cigna-orange); font-weight: 600; }
+
+  /* DECISION BANNER */
+  .decision-banner { border-radius: var(--radius-lg); padding: 20px 24px; margin-bottom: 16px; display: grid; grid-template-columns: auto 1fr auto; gap: 18px; align-items: start; box-shadow: var(--shadow-sm); border: 1px solid; }
+  .decision-banner.reportable     { background: var(--status-red-bg);   border-color: var(--status-red-bdr); }
+  .decision-banner.not-reportable { background: var(--status-green-bg); border-color: var(--status-green-bdr); }
+  .decision-banner.needs-review   { background: var(--status-amber-bg); border-color: var(--status-amber-bdr); }
+  .d-icon-wrap { width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
+  .icon-red   { background: var(--status-red-bdr); }
+  .icon-green { background: var(--status-green-bdr); }
+  .icon-amber { background: var(--status-amber-bdr); }
+  .ai-tag { display: inline-flex; align-items: center; gap: 4px; font-size: 10px; font-weight: 700; color: var(--cigna-teal-dark); background: var(--cigna-teal-light); border: 1px solid #B3E5E8; border-radius: 4px; padding: 1px 7px; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.05em; }
+  .decision-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 5px; }
+  .decision-label.reportable     { color: var(--status-red); }
+  .decision-label.not-reportable { color: var(--status-green); }
+  .decision-label.needs-review   { color: var(--status-amber); }
+  .decision-reasoning { font-size: 13px; color: var(--cigna-text); line-height: 1.6; }
+  .conf-block { text-align: center; min-width: 88px; }
+  .conf-number { font-size: 28px; font-weight: 700; color: var(--cigna-navy); line-height: 1; }
+  .conf-sub { font-size: 10px; font-weight: 700; color: var(--cigna-muted); text-transform: uppercase; letter-spacing: 0.07em; margin-top: 2px; margin-bottom: 8px; }
+  .conf-bar { width: 80px; height: 5px; background: var(--cigna-border); border-radius: 3px; overflow: hidden; margin: 0 auto; }
+  .conf-fill { height: 100%; border-radius: 3px; transition: width 0.6s ease; }
+
+  /* CARDS */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+  .one-col  { margin-bottom: 16px; }
+  .card { background: var(--cigna-white); border: 1px solid var(--cigna-border); border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow-sm); }
+  .card-header { padding: 12px 18px; border-bottom: 2px solid var(--cigna-bg); display: flex; align-items: center; gap: 8px; }
+  .card-icon { width: 26px; height: 26px; border-radius: 6px; background: var(--cigna-light-navy); display: flex; align-items: center; justify-content: center; font-size: 13px; }
+  .card-title { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--cigna-navy); }
+  .card-body { padding: 16px 18px; }
+  .field { margin-bottom: 12px; }
+  .field:last-child { margin-bottom: 0; }
+  .field-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--cigna-muted); margin-bottom: 4px; }
+  .field-value { font-size: 14px; color: var(--cigna-text); }
+  .field-value.strong { font-weight: 700; color: var(--cigna-navy); font-size: 15px; }
+  .tag-list { display: flex; flex-wrap: wrap; gap: 6px; }
+  .tag { background: var(--cigna-teal-light); border: 1px solid #B3E5E8; color: var(--cigna-teal-dark); border-radius: 20px; padding: 3px 10px; font-size: 12px; font-weight: 500; }
+  .citation { display: flex; gap: 10px; padding: 10px 14px; background: var(--cigna-light-navy); border: 1px solid #C5D5E8; border-radius: var(--radius); margin-bottom: 8px; }
+  .citation:last-child { margin-bottom: 0; }
+  .citation-num { font-size: 11px; font-weight: 700; color: var(--cigna-teal); min-width: 22px; }
+  .citation-text { font-size: 13px; color: var(--cigna-navy); font-weight: 500; }
+  .note-box { background: var(--cigna-bg); border: 1px solid var(--cigna-border); border-radius: var(--radius); padding: 14px 16px; font-family: 'Courier New', monospace; font-size: 12px; line-height: 1.8; color: var(--cigna-muted); white-space: pre-wrap; max-height: 180px; overflow-y: auto; }
+
+  /* REVIEW PANEL */
+  .review-panel { background: var(--cigna-white); border: 1px solid var(--cigna-border); border-radius: var(--radius-lg); padding: 22px 24px; box-shadow: var(--shadow-md); margin-bottom: 16px; }
+  .review-title { font-size: 14px; font-weight: 700; color: var(--cigna-navy); margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+  .review-title::before { content: ''; display: block; width: 3px; height: 18px; background: var(--cigna-teal); border-radius: 2px; }
+  .review-actions { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+  .action-btn { padding: 14px 12px; border-radius: var(--radius); border: 1.5px solid; cursor: pointer; font-family: var(--font); display: flex; flex-direction: column; align-items: center; gap: 5px; transition: all 0.15s; background: var(--cigna-white); }
+  .action-btn .btn-icon  { font-size: 22px; }
+  .action-btn .btn-label { font-size: 13px; font-weight: 600; }
+  .action-btn .btn-sub   { font-size: 11px; color: var(--cigna-muted); }
+  .btn-accept   { border-color: var(--status-green-bdr); color: var(--status-green); }
+  .btn-accept:hover { background: var(--status-green-bg); }
+  .btn-accept.selected { background: var(--status-green-bg); border-color: var(--status-green); box-shadow: 0 0 0 3px rgba(26,122,74,0.15); }
+  .btn-override { border-color: var(--status-amber-bdr); color: var(--status-amber); }
+  .btn-override:hover { background: var(--status-amber-bg); }
+  .btn-override.selected { background: var(--status-amber-bg); border-color: var(--status-amber); box-shadow: 0 0 0 3px rgba(180,83,9,0.15); }
+  .btn-escalate { border-color: #C5D5E8; color: var(--cigna-navy); }
+  .btn-escalate:hover { background: var(--cigna-light-navy); }
+  .btn-escalate.selected { background: var(--cigna-light-navy); border-color: var(--cigna-navy); box-shadow: 0 0 0 3px rgba(0,56,101,0.12); }
+  .override-box { display: none; margin-top: 12px; }
+  .override-box.visible { display: block; }
+  .override-box label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--cigna-muted); display: block; margin-bottom: 6px; }
+  .override-box textarea { width: 100%; border: 1.5px solid var(--cigna-border); border-radius: var(--radius); padding: 10px 12px; font-family: var(--font); font-size: 13px; color: var(--cigna-text); background: var(--cigna-bg); resize: vertical; min-height: 72px; outline: none; transition: border 0.15s; }
+  .override-box textarea:focus { border-color: var(--cigna-teal); background: var(--cigna-white); }
+  .submit-row { display: flex; justify-content: flex-end; align-items: center; gap: 10px; margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--cigna-bg); }
+  .btn-ghost { background: transparent; border: 1.5px solid var(--cigna-border); color: var(--cigna-muted); border-radius: 20px; padding: 8px 20px; font-family: var(--font); font-size: 13px; font-weight: 600; cursor: pointer; }
+  .btn-submit { background: var(--cigna-navy); color: #fff; border: none; border-radius: 20px; padding: 9px 28px; font-family: var(--font); font-size: 13px; font-weight: 700; cursor: pointer; transition: background 0.15s; }
+  .btn-submit:hover { background: var(--cigna-navy-dark); }
+  .btn-submit:disabled { background: var(--cigna-border); color: var(--cigna-muted); cursor: not-allowed; }
+  .submitted-badge { display: inline-flex; align-items: center; gap: 8px; background: var(--status-green-bg); border: 1px solid var(--status-green-bdr); color: var(--status-green); border-radius: var(--radius); padding: 10px 16px; font-size: 13px; font-weight: 600; margin-top: 12px; width: 100%; }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="nav-brand">
+    <span class="cigna-logo-text">cigna<span class="cigna-dot"></span></span>
+    <div class="nav-divider"></div>
+    <span class="nav-app-name">Pharmacovigilance · Adverse Event Review</span>
+  </div>
+  <div class="nav-right">
+    <div class="nav-counter"><span class="nav-badge badge-red" id="count-red">0</span> Reportable</div>
+    <div class="nav-counter"><span class="nav-badge badge-amber" id="count-amber">0</span> Needs Review</div>
+    <div class="nav-counter"><span class="nav-badge badge-green" id="count-green">0</span> Clear</div>
+    <div class="nav-divider"></div>
+    <div style="display:flex;align-items:center;gap:8px">
+      <div class="nav-avatar">AK</div>
+      <span class="nav-username">ADV-0042</span>
+    </div>
+  </div>
+</nav>
+
+<div class="subnav">
+  <div class="breadcrumb">
+    <a href="#">Home</a> <span style="color:var(--cigna-border)">›</span>
+    <a href="#">Pharmacovigilance</a> <span style="color:var(--cigna-border)">›</span>
+    <span>Adverse Event Review Queue</span>
+  </div>
+  <div class="subnav-actions">
+    <button class="btn-outline">Export Report</button>
+    <button class="btn-primary-sm">+ New Case</button>
+  </div>
+</div>
+
+<div class="layout">
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-title">Review Queue</div>
+      <div class="filter-tabs">
+        <button class="filter-tab active" onclick="filterCases('all',this)">All</button>
+        <button class="filter-tab" onclick="filterCases('YES',this)">Reportable</button>
+        <button class="filter-tab" onclick="filterCases('NEEDS_REVIEW',this)">Review</button>
+        <button class="filter-tab" onclick="filterCases('NO',this)">Clear</button>
+      </div>
+    </div>
+    <div class="case-list" id="case-list"></div>
+  </aside>
+
+  <main class="main" id="main-panel">
+    <div class="empty-state">
+      <div class="empty-icon">📋</div>
+      <h3>Select a case to begin review</h3>
+      <p>Choose a case from the queue on the left</p>
+    </div>
+  </main>
+</div>
+
+<script>
+const SAMPLE_CASES = [
+  { case_id:"CASE-2024-0891", call_date:"2024-03-15", drug_name:"Atorvastatin", advocate_id:"ADV-0042", status:"PENDING_REVIEW", classifier_output:{ decision:"YES", confidence_score:0.94, reasoning:"The patient reported severe rash (urticaria) and dyspnea within 72 hours of initiating Atorvastatin therapy, requiring emergency department hospitalization. Section 6.1 of the prescribing information explicitly lists urticaria and dyspnea under serious adverse reactions, and Section 5.2 identifies these as requiring mandatory 15-day expedited reporting when associated with hospitalization.", supporting_doc_sections:["Section 6.1 – Adverse Reactions (Serious)","Section 5.2 – Warnings: Hypersensitivity Reactions"], recommended_report_type:"15-Day Alert Report", extracted_event_data:{ drug_name:"Atorvastatin", patient_age:"58", patient_gender:"Female", reported_symptoms:["severe rash","urticaria","dyspnea","difficulty breathing"], onset_date:"2024-03-12", severity:"Serious", outcome:"hospitalized overnight, recovered", concomitant_medications:["Metformin 500mg"] } } },
+  { case_id:"CASE-2024-0892", call_date:"2024-03-15", drug_name:"Lisinopril", advocate_id:"ADV-0042", status:"PENDING_REVIEW", classifier_output:{ decision:"NEEDS_REVIEW", confidence_score:0.71, reasoning:"The patient reports persistent dry cough beginning 2 weeks after starting Lisinopril. Section 6.1 lists cough as a common adverse reaction. However, the documentation is ambiguous about whether isolated, non-severe cough without hospitalization meets the threshold for mandatory expedited reporting vs. periodic safety reporting. Senior review recommended.", supporting_doc_sections:["Section 6.1 – Adverse Reactions (Common)","Section 5.4 – Monitoring Parameters"], recommended_report_type:"Periodic Safety Report (possible)", extracted_event_data:{ drug_name:"Lisinopril", patient_age:"64", patient_gender:"Male", reported_symptoms:["persistent dry cough","throat irritation"], onset_date:"2024-03-01", severity:"Non-Serious", outcome:"ongoing, not hospitalized", concomitant_medications:["Amlodipine 5mg","Aspirin 81mg"] } } },
+  { case_id:"CASE-2024-0893", call_date:"2024-03-15", drug_name:"Metformin", advocate_id:"ADV-0042", status:"PENDING_REVIEW", classifier_output:{ decision:"NO", confidence_score:0.97, reasoning:"Patient reports mild nausea and stomach upset in the first week of Metformin therapy. Per Section 6.1, gastrointestinal symptoms are the most common adverse reactions and are expected upon initiation. These are not classified as serious adverse events requiring manufacturer reporting. No hospitalization, no functional impairment.", supporting_doc_sections:["Section 6.1 – Adverse Reactions (GI Effects)","Section 2.3 – Dosing: Titration to Minimize GI Effects"], recommended_report_type:null, extracted_event_data:{ drug_name:"Metformin", patient_age:"45", patient_gender:"Female", reported_symptoms:["nausea","stomach upset","mild diarrhea"], onset_date:"2024-03-08", severity:"Non-Serious", outcome:"self-resolving", concomitant_medications:[] } } }
+];
+
+let cases = SAMPLE_CASES.map(c=>({...c,_reviewed:false,_userDecision:null}));
+let activeCase=null, activeFilter='all', selectedAction=null;
+
+function init() { renderSidebar(); updateCounters(); }
+
+function updateCounters() {
+  document.getElementById('count-red').textContent   = cases.filter(c=>c.classifier_output.decision==='YES').length;
+  document.getElementById('count-amber').textContent = cases.filter(c=>c.classifier_output.decision==='NEEDS_REVIEW').length;
+  document.getElementById('count-green').textContent = cases.filter(c=>c.classifier_output.decision==='NO').length;
+}
+
+function renderSidebar() {
+  const list = document.getElementById('case-list');
+  const filtered = activeFilter==='all' ? cases : cases.filter(c=>c.classifier_output.decision===activeFilter);
+  list.innerHTML = filtered.map(c => {
+    const d=c.classifier_output.decision;
+    const dot=d==='YES'?'dot-red':d==='NO'?'dot-green':'dot-amber';
+    const isActive=activeCase&&activeCase.case_id===c.case_id;
+    return `<div class="case-item ${isActive?'active':''}" onclick="selectCase('${c.case_id}')">
+      <div class="case-item-row"><span class="case-id">${c.case_id}</span><div class="status-dot ${dot}"></div></div>
+      <div class="case-drug">${c.drug_name}</div>
+      <div class="case-footer"><span class="case-date">${c.call_date}</span><span class="case-chip ${c._reviewed?'chip-reviewed':'chip-pending'}">${c._reviewed?'✓ Reviewed':'Pending'}</span></div>
+    </div>`;
+  }).join('');
+}
+
+function filterCases(f,btn) { activeFilter=f; document.querySelectorAll('.filter-tab').forEach(t=>t.classList.remove('active')); btn.classList.add('active'); renderSidebar(); }
+function selectCase(id) { activeCase=cases.find(c=>c.case_id===id); selectedAction=null; renderSidebar(); renderMainPanel(); }
+
+function renderMainPanel() {
+  if(!activeCase) return;
+  const c=activeCase, out=c.classifier_output, ev=out.extracted_event_data, d=out.decision;
+  const bClass=d==='YES'?'reportable':d==='NO'?'not-reportable':'needs-review';
+  const iClass=d==='YES'?'icon-red':d==='NO'?'icon-green':'icon-amber';
+  const icon=d==='YES'?'⚠️':d==='NO'?'✅':'🔍';
+  const label=d==='YES'?'Reportable':d==='NO'?'Not Reportable':'Needs Senior Review';
+  const pct=Math.round(out.confidence_score*100);
+  const cColor=out.confidence_score>=0.9?'var(--status-green)':out.confidence_score>=0.6?'var(--status-amber)':'var(--status-red)';
+  const cites=(out.supporting_doc_sections||[]).map((s,i)=>`<div class="citation"><span class="citation-num">§${i+1}</span><span class="citation-text">${s}</span></div>`).join('')||'<p style="color:var(--cigna-muted);font-size:13px">No sections cited</p>';
+  const syms=(ev.reported_symptoms||[]).map(s=>`<span class="tag">${s}</span>`).join('')||'—';
+  const meds=(ev.concomitant_medications||[]).length?ev.concomitant_medications.map(m=>`<span class="tag">${m}</span>`).join(''):'<span style="color:var(--cigna-muted);font-size:13px">None reported</span>';
+  const note=`Date: ${c.call_date}\nCase ID: ${c.case_id}\nAdvocate: ${c.advocate_id}\nDrug: ${c.drug_name}\n\n[Chart note — PII redacted before AI processing]\n\nPatient reported: ${(ev.reported_symptoms||[]).join(', ')}.\nOnset: ${ev.onset_date||'not specified'}. Severity: ${ev.severity}.\nOutcome: ${ev.outcome||'not specified'}.`;
+  const reviewed=c._reviewed?`<div class="submitted-badge">✔ Decision recorded: ${c._userDecision}</div>`:'';
+
+  document.getElementById('main-panel').innerHTML = `
+    <div class="case-header">
+      <div>
+        <h2>${c.drug_name} — ${c.case_id}</h2>
+        <div class="header-chips" style="margin-top:6px">
+          <span class="hchip">📅 ${c.call_date}</span>
+          <span class="hchip">👤 ${c.advocate_id}</span>
+          ${out.recommended_report_type?`<span class="hchip report-chip">⚡ ${out.recommended_report_type}</span>`:''}
+        </div>
+      </div>
+    </div>
+    <div class="decision-banner ${bClass}">
+      <div class="d-icon-wrap ${iClass}">${icon}</div>
+      <div>
+        <div class="ai-tag">🤖 AI Assessment</div>
+        <div class="decision-label ${bClass}">${label}</div>
+        <div class="decision-reasoning">${out.reasoning}</div>
+      </div>
+      <div class="conf-block">
+        <div class="conf-number">${pct}%</div>
+        <div class="conf-sub">Confidence</div>
+        <div class="conf-bar"><div class="conf-fill" style="width:${pct}%;background:${cColor}"></div></div>
+      </div>
+    </div>
+    <div class="two-col">
+      <div class="card">
+        <div class="card-header"><div class="card-icon">📋</div><span class="card-title">Extracted Event Data</span></div>
+        <div class="card-body">
+          <div class="field"><div class="field-label">Reported Symptoms</div><div class="tag-list">${syms}</div></div>
+          <div class="field"><div class="field-label">Onset Date</div><div class="field-value">${ev.onset_date||'—'}</div></div>
+          <div class="field"><div class="field-label">Severity</div><div class="field-value strong">${ev.severity}</div></div>
+          <div class="field"><div class="field-label">Outcome</div><div class="field-value">${ev.outcome||'—'}</div></div>
+          <div class="field"><div class="field-label">Patient</div><div class="field-value">${ev.patient_age?ev.patient_age+' y/o':''} ${ev.patient_gender||''}</div></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-icon">💊</div><span class="card-title">Drug & Medications</span></div>
+        <div class="card-body">
+          <div class="field"><div class="field-label">Suspect Drug</div><div class="field-value strong">${ev.drug_name}</div></div>
+          <div class="field"><div class="field-label">Concomitant Medications</div><div class="tag-list">${meds}</div></div>
+          <div class="field"><div class="field-label">Reporter Type</div><div class="field-value">${ev.reporter_type||'Patient (via advocate)'}</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="one-col">
+      <div class="card">
+        <div class="card-header"><div class="card-icon">📖</div><span class="card-title">Supporting Pharma Doc Sections</span></div>
+        <div class="card-body">${cites}</div>
+      </div>
+    </div>
+    <div class="one-col">
+      <div class="card">
+        <div class="card-header"><div class="card-icon">📝</div><span class="card-title">Chart Note (PII Redacted)</span></div>
+        <div class="card-body"><pre class="note-box">${note}</pre></div>
+      </div>
+    </div>
+    <div class="review-panel">
+      <div class="review-title">Your Review Decision</div>
+      <div class="review-actions">
+        <button class="action-btn btn-accept" id="btn-accept" onclick="selectAction('accept')">
+          <span class="btn-icon">✅</span><span class="btn-label">Accept</span><span class="btn-sub">${label}</span>
+        </button>
+        <button class="action-btn btn-override" id="btn-override" onclick="selectAction('override')">
+          <span class="btn-icon">✏️</span><span class="btn-label">Override</span><span class="btn-sub">Change outcome</span>
+        </button>
+        <button class="action-btn btn-escalate" id="btn-escalate" onclick="selectAction('escalate')">
+          <span class="btn-icon">⬆️</span><span class="btn-label">Escalate</span><span class="btn-sub">Senior reviewer</span>
+        </button>
+      </div>
+      <div class="override-box" id="override-box">
+        <label>Override Reason (required)</label>
+        <textarea id="override-text" placeholder="Explain why you are overriding the AI decision..."></textarea>
+      </div>
+      ${reviewed}
+      <div class="submit-row">
+        <button class="btn-ghost" onclick="clearSelection()">Clear</button>
+        <button class="btn-submit" id="btn-submit" onclick="submitDecision()" disabled>Submit Decision →</button>
+      </div>
+    </div>`;
+}
+
+function selectAction(a) {
+  selectedAction=a;
+  ['accept','override','escalate'].forEach(x=>document.getElementById('btn-'+x)?.classList.remove('selected'));
+  document.getElementById('btn-'+a)?.classList.add('selected');
+  document.getElementById('override-box').classList.toggle('visible',a==='override');
+  document.getElementById('btn-submit').disabled=false;
+}
+
+function clearSelection() {
+  selectedAction=null;
+  ['accept','override','escalate'].forEach(x=>document.getElementById('btn-'+x)?.classList.remove('selected'));
+  document.getElementById('override-box')?.classList.remove('visible');
+  document.getElementById('btn-submit').disabled=true;
+}
+
+function submitDecision() {
+  if(!selectedAction||!activeCase) return;
+  if(selectedAction==='override'&&!document.getElementById('override-text')?.value?.trim()) { alert('Please enter an override reason.'); return; }
+  const d=activeCase.classifier_output.decision;
+  const ud=selectedAction==='accept'?d:selectedAction==='override'?(d==='YES'?'NO':'YES'):'ESCALATED';
+  const idx=cases.findIndex(c=>c.case_id===activeCase.case_id);
+  cases[idx]._reviewed=true; cases[idx]._userDecision=ud; activeCase=cases[idx];
+  renderSidebar(); renderMainPanel();
+}
+
+init();
+</script>
+</body>
+</html>

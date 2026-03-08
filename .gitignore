@@ -1,0 +1,42 @@
+# Secrets
+.env
+.env.local
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# Vector store (rebuilt by running ingest_docs.py)
+knowledge_base/vector_store/chroma_db/
+
+# Logs
+logs/
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Runtime data
+data/crm_intake/*
+data/crm_processed/*
+data/approved_cases/*
+data/review_queue/*
+!data/crm_intake/.gitkeep
+!data/crm_processed/.gitkeep
+!data/approved_cases/.gitkeep
+!data/review_queue/.gitkeep
+
+# Generated reports
+reports/output/*
+!reports/output/.gitkeep
+
+# Drug registry
+data/drug_registry.json

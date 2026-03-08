@@ -1,0 +1,24 @@
+Date: 2024-03-15
+Advocate ID: ADV-0042
+Case ID: CASE-2024-0891
+
+PATIENT CALL SUMMARY
+─────────────────────────────────────────────────────────────
+Patient called today to report that she began experiencing severe skin rash and difficulty 
+breathing approximately 3 days after starting her new prescription for [DRUG NAME]. 
+She described the rash as widespread, covering her arms and torso, with hives. 
+The breathing difficulty was significant enough that she visited the ER on 03/13/2024.
+
+She was hospitalized overnight for observation and treated with antihistamines and 
+corticosteroids. She has since been discharged and is recovering at home.
+
+Patient reports she is not taking any other new medications. She has been on metformin 
+for diabetes management for the past 2 years with no issues.
+
+Patient is 58 years old, female.
+
+She confirmed she wants to stop taking [DRUG NAME] and is waiting for her physician 
+to recommend an alternative.
+
+Advocate Notes: Event appears serious (hospitalization). Need to check manufacturer 
+documentation to determine if this is a reportable adverse event.

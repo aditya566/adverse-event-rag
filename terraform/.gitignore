@@ -1,0 +1,15 @@
+# Terraform
+.terraform/
+.terraform.lock.hcl
+terraform.tfstate
+terraform.tfstate.backup
+terraform.tfstate.d/
+*.tfplan
+
+# Secrets — NEVER commit
+terraform.tfvars
+*.auto.tfvars
+
+# Lambda build artifacts
+modules/lambda/placeholder.zip
+modules/lambda/*.zip

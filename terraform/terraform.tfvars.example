@@ -1,0 +1,29 @@
+# ── Copy this to terraform.tfvars and fill in your values ────────────────────
+# NEVER commit terraform.tfvars to git (it's in .gitignore)
+
+aws_region   = "us-east-1"
+environment  = "prod"
+project_name = "adverse-event"
+
+# Database
+db_password = "CHANGE_ME_strong_password_here_32chars"
+
+# Company info (printed on MedWatch 3500A reports)
+company_name    = "Acme Health Insurance"
+company_address = "123 Main St, New York, NY 10001"
+company_phone   = "800-555-0100"
+
+# Anthropic API key — leave empty if using Amazon Bedrock
+anthropic_api_key = ""
+
+# Bedrock model (default: Claude Sonnet)
+bedrock_model_id = "anthropic.claude-sonnet-4-5-20251001"
+
+# ECR image — fill in after Step 3 of deployment guide
+ecr_image_uri = "ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/adverse-event-review:latest"
+
+# CloudWatch alerts
+alert_email = "your-team@company.com"
+
+# Daily batch time (UTC) — 9PM UTC = 5PM ET
+batch_time_utc = "cron(0 21 * * ? *)"
